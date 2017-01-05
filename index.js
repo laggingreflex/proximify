@@ -1,12 +1,13 @@
 require('./check-proxy-support')
 
 const defaultOptions = {
-  recursive: true,
+  deep: true,
   store: true,
-  symbol: Symbol('__PROXIMIFIED__'),
+  // applyOnData: true,
   suffix: 'Async',
   // filter(), // todo
   // promisifier(), // todo
+  symbol: Symbol('__PROXIMIFIED__'),
 }
 
 module.exports = function proximify(originalTarget, opts = {}) {
@@ -27,7 +28,7 @@ module.exports = function proximify(originalTarget, opts = {}) {
       }
 
       if (typeof val !== 'undefined') {
-        if (val && typeof val === 'object' && opts.recursive) {
+        if (val && typeof val === 'object' && opts.deep) {
           const proxy = proximify(val, opts)
           if (opts.store) {
             target[name] = proxy
@@ -61,6 +62,9 @@ module.exports = function proximify(originalTarget, opts = {}) {
         }
 
         return new Promise((resolve, reject) => fnSync(...args, (err, ...data) => {
+          if (opts.applyOnData) {
+            data = data.map(data => data && typeof data === 'object' ? proximify(data) : data);
+          }
           callback(err, ...data);
           if (err === null || typeof err === 'undefined') {
             return resolve(...data)
@@ -70,6 +74,9 @@ module.exports = function proximify(originalTarget, opts = {}) {
           }
           if (!data.length) {
             // no data, but error is not an Error... it must be data?
+            if (opts.applyOnData) {
+              err = err && typeof err === 'object' ? proximify(err) : err
+            }
             return resolve(err)
           } else {
             // data exists, but err is not an Error... ?
