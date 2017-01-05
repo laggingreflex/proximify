@@ -1,6 +1,6 @@
 {
   "name": "proximify",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Promisify using ES6 Proxy",
   "main": "index.js",
   "repository": "laggingreflex/proximify",
