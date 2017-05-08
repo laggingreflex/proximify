@@ -3,7 +3,7 @@ require('./check-proxy-support')
 const defaultOptions = {
   deep: true,
   store: true,
-  // applyOnData: true,
+  applyOnData: true,
   suffix: 'Async',
   // filter(), // todo
   // promisifier(), // todo
