@@ -1,10 +1,16 @@
-const EventEmitter = require('events');
 const proximify = require('..');
+const EventEmitter = require('events');
 
-const myEventEmitter = new EventEmitter();
-const myPromisifiedEventEmitter = proximify(myEventEmitter);
+module.exports = async () => {
+  const myEventEmitter = new EventEmitter();
+  const myPromisifiedEventEmitter = proximify(myEventEmitter);
 
-myPromisifiedEventEmitter.onAsync('test').then(console.log).catch((...e) => console.error('error:', ...e))
-myPromisifiedEventEmitter.on('test', (...data) => console.log('data:', ...data))
+  const p = Promise.all([
+    myPromisifiedEventEmitter.onAsync('test'),
+    new Promise(r => myPromisifiedEventEmitter.on('test', r)),
+  ]);
 
-myPromisifiedEventEmitter.emit('test', 'should be this text')
+  myPromisifiedEventEmitter.emit('test', 'should be this text');
+
+  await p;
+}

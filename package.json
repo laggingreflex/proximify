@@ -3,9 +3,10 @@
   "version": "0.2.0",
   "description": "Promisify using ES6 Proxy",
   "main": "index.js",
+  "scripts": {
+    "test": "node test"
+  },
   "repository": "laggingreflex/proximify",
-  "author": "laggingreflex",
-  "license": "ISC",
   "keywords": [
     "promise",
     "promisify",
